@@ -7,6 +7,7 @@
 #include <map>
 #include<NTPClient.h>
 #include<WiFi.h>
+#include <vector>
 #define MAX_NUMBER_OF_DEVICES 100
 
 struct Device_Properties
@@ -19,7 +20,7 @@ struct Device_Properties
 class EVENT{
     public:
         std::map<String, bool> prev_status, cur_status;
-        // Device_Properties devices[MAX_NUMBER_OF_DEVICES];
+        Device_Properties devices[MAX_NUMBER_OF_DEVICES];
 
         String createJson(BLEScanResults result, String esp_mac);
         String createTimeStamp();

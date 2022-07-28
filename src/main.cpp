@@ -60,13 +60,13 @@ int key_count = 0;
 void connectWifi();
 void connect_mqtt();
 void keypad_control(char* input_password);
-void on_message(char *topic, byte *payload, unsigned int length);
+// void on_message(char *topic, byte *payload, unsigned int length);
 void reconnect();
-unsigned long getKeypadIntegerMulti();
+// unsigned long getKeypadIntegerMulti();
 void executeCommand(char* command);
 void door_open();
 void door_close();
-void IRAM_ATTR button_open();
+
 
 
 
@@ -75,7 +75,7 @@ void setup()
     Serial.begin(9600);
     connectWifi();
     mqtt.setServer(mqttBroker.c_str(), 1883);
-    mqtt.setCallback(on_message);// Initialize the callback routine
+    // mqtt.setCallback(on_message);// Initialize the callback routine
 
     pinMode(pushButton_pin, INPUT_PULLUP); // set ESP32 pin to input pull-up mode
     pinMode(RELAY_PIN, OUTPUT);
@@ -161,7 +161,37 @@ void connectWifi()
     Serial.println(WiFi.gatewayIP());
     Serial.println(WiFi.dnsIP());
 }
+void connect_mqtt()
+{
+    while (!mqtt.connected())
+    {
+        Serial.println("Connecting with MQTT...");
+        if (mqtt.connect(CLIENTID))
+        {
+            mqtt.subscribe(topic_to_subscribe);
+            // mqtt.subscribe("workforce/pub");
+        }
+    }
+}
+// Reconnect to client
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (mqtt.connect(CLIENTID)) {
+      Serial.println("connected");
+      Serial.print("Publishing to: ");
+      Serial.println(topic_to_publish);
+      Serial.println('\n');
 
+    } else {
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
 void executeCommand(char* command)
 {
   if(!strcmp(command, "Open"))
