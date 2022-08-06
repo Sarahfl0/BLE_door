@@ -80,7 +80,7 @@ String EVENT::createJson(BLEScanResults result, String esp_mac)
                 this->devices[count].Address = mac_add;
                 this->devices[count].employee_no = j;
                 strcpy( MAC_data, device.getAddress().toString().c_str());
-                Serial.printf(" MAC address = %s is an employee device of employee no %d\n", MAC_data,j);
+                // Serial.printf(" MAC address = %s is an employee device of employee no %d\n", MAC_data,j);
 
                 count++;
                 if(!this->prev_status[mac_add])
@@ -94,7 +94,7 @@ String EVENT::createJson(BLEScanResults result, String esp_mac)
                     this->cur_status[mac_add] = 1;
             }
         }
-        doc["device_count"] = count;
+        // doc["device_count"] = count;
 
     }
     // for(auto mac: this->prev_status)

@@ -13,7 +13,7 @@
 #define ROW_NUM     4  // four rows
 #define COLUMN_NUM  4  // four columns
 #define DOORTIME  30000 // the time door remains open after open command
-#define CLIENTID "123456789"
+#define CLIENTID "nhjfanjknjkefnjjhfuhawiuhu"
 #define MAX_MSG_SIZE    100
 #define MAX_OTP_SIZE    20
 
@@ -33,11 +33,14 @@ byte pin_column[COLUMN_NUM] = {16, 4, 0, 2}; // GIOP16, GIOP4, GIOP0, GIOP2 conn
 // The below are the variables, which can be changed
 
 // wifi & mqttt variable 
+// String wifiSSID="dma-gulshan2.4";
+// String wifiPassword="dmabd987";
 String wifiSSID="dma-gulshan2.4";
 String wifiPassword="dmabd987";
-String mqttBroker = "dma.com.bd";
+String mqttBroker = "broker.hivemq.com";
 unsigned long wifi_interval = 30000;
 const char* topic_to_publish = "DMA/door_gateway";
+// const char* topic_to_publish = "DMA/door_server";
 const char* topic_to_subscribe = "DMA/door_server";
 char* mqtt_command;
 
@@ -86,8 +89,11 @@ void setup()
 {   
     Serial.begin(9600);
     connectWifi();
+    // connect_mqtt();
     mqtt.setServer(mqttBroker.c_str(), 1883);
+    mqtt.setBufferSize(512);
     mqtt.setCallback(on_message);// Initialize the callback routine
+
 
     pinMode(pushButton_pin, INPUT_PULLUP); // set ESP32 pin to input pull-up mode
     pinMode(RELAY_PIN, OUTPUT);
@@ -97,13 +103,36 @@ void setup()
 
 void loop()
 {
-  if(buttonPressed)
+
+  if (!mqtt.connected())
     {
-      door_open();
-      delay(DOORTIME);
-      door_close();
-      pushbutton_pressed = false;
+      connect_mqtt();
+      Serial.println("MQTT Connected");
+      mqtt.publish(topic_to_publish, "ESP 32 Online!");
     }
+  myBLE.Scan();
+  String esp_mac = WiFi.macAddress();
+  String serialized_json = badge_event.createJson(myBLE.foundDevices,esp_mac);
+  Serial.println(serialized_json);
+  Serial.println(serialized_json.length());
+
+  if(serialized_json.length() > 0)
+  {
+    if(mqtt.publish(topic_to_publish, serialized_json.c_str()))
+    {
+      Serial.println("MQTT pub successful");
+    }
+    else{
+      Serial.println("MQTT pub unsuccessful");
+    }
+  }
+  // if(buttonPressed)
+  //   {
+  //     door_open();
+  //     delay(DOORTIME);
+  //     door_close();
+  //     pushbutton_pressed = false;
+  //   }
   if(keypad_input)
   {
     if(key_count == otp_length)
@@ -133,25 +162,11 @@ void loop()
   }
 
   
-  if (!mqtt.connected())
-  {
-      connect_mqtt();
-      Serial.println("MQTT Connected");
-      mqtt.publish(topic_to_publish, "ESP 32 Online!");
-  }
-  
 
-  myBLE.Scan();
-  String esp_mac = WiFi.macAddress();
-  String serialized_json = badge_event.createJson(myBLE.foundDevices,esp_mac);
-  
-  if(serialized_json.length() > 0)
-  {
-    mqtt.publish(topic_to_publish, serialized_json.c_str());
-  }
+
 
   mqtt.loop();
-  wifi_reconnect();
+  // wifi_reconnect();
 }
 
 
@@ -192,7 +207,7 @@ void mqtt_reconnect() {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if (mqtt.connect(CLIENTID)) {
-      Serial.println("connected");
+      Serial.println("MQTT reconnected");
       Serial.print("Publishing to: ");
       Serial.println(topic_to_publish);
       Serial.println('\n');
@@ -219,10 +234,13 @@ void executeCommand(char* command)
 {
   if(!strcmp(command, "Open"))
   {
+    Serial.println("The door is opening");
+
     door_open();
   }
   else if(!strcmp(command, "Close"))
   {
+    Serial.println("The door is closing");
     door_close();
   }
   else if(!strcmp(strncpy(NULL, command, 6), "Keypad"))
@@ -248,7 +266,7 @@ void door_close()
 {
   digitalWrite(RELAY_PIN, HIGH); 
 }
-void on_message(char *topic, byte *payload, unsigned int length)
+void on_message(char* topic, byte* payload, unsigned int length)
 {
   Serial.print("Message arrived on topic: ");
   Serial.print(topic_to_subscribe);
@@ -260,6 +278,7 @@ void on_message(char *topic, byte *payload, unsigned int length)
     messageTemp += (char)mqtt_command[i];
   }
   Serial.println();
+  Serial.println(messageTemp);
   new_message = true;
 }
 
