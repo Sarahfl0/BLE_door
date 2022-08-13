@@ -21,18 +21,34 @@ void BLE:: init()
 
 }
 
+void BLE::Stop()
+{
+  this->stop->stop();
+}
+
 void BLE::Scan() 
 {
   BLEDevice::init("BLE");
-  this->scan = BLEDevice::getScan(); //create new scan
+  this->scan = BLEDevice::getScan(); //create new scan-
   // this->scan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  this->scanTime=5;
+  this->scanTime=1;
   this->scan->setActiveScan(true);
-  this->foundDevices = this->scan->start(1);
+  this->foundDevices = this->scan->start(scanTime);
   this->device_count = this->foundDevices.getCount();
+  // this->stop->stop();
+  
   // Serial.printf("Number of devices: %d\n", this->device_count);
   // Serial.print("Devices found: \n");
   // int count = 0;
+// ******************The new lines
+
+  // this->setInterval(1349);
+  // this->setWindow(449);
+  // this->setActiveScan(true);
+
+
+
+  // *****************
   for (uint32_t i = 0; i < this->device_count; i++)
   {
     BLEAdvertisedDevice currentdevice = foundDevices.getDevice(i);
