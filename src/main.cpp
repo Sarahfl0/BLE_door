@@ -59,7 +59,7 @@ String otp_msg;
 bool keypad_input = false;
 bool new_message = 0;
 char msg[MAX_MSG_SIZE];
-bool door_status = 0;
+// bool door_status = 0;
 // char input_otp[MAX_OTP_SIZE];
 
 int otp_length = 4;
@@ -317,7 +317,7 @@ void executeCommand(char *command)
 void door_open()
 
 {
-	door_status = 1;
+	// door_status = 1;
 	for (int i=MAX_PWM_WRITE; i>=0 ; i -= STEPS)
 	{
 		analogWrite(RELAY_PIN, i);
@@ -328,14 +328,14 @@ void door_open()
 void door_close()
 {	
 	// digitalWrite(RELAY_PIN, HIGH);
-	if (door_status==1){
-		for (int i=0; i < MAX_PWM_WRITE ; i += STEPS)
+	// if (door_status==1){
+	for (int i=0; i < MAX_PWM_WRITE ; i += STEPS)
 	{
 		analogWrite(RELAY_PIN, i);
 		delay(DOORTIME_CLOSE_INTERVAL);
 	}
-	door_status=0;
-	}
+	// door_status=0;
+	// }
 
 }
 void on_message(char *topic, byte *payload, unsigned int length)

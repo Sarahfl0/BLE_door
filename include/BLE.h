@@ -44,14 +44,25 @@ class BLE
         uint32_t scanTime;
         int device_count;
         BLEScan *scan;// = BLEDevice::getScan();
+        BLEScan *stop;
+// *new
+	      void setInterval(uint16_t intervalMSecs);
+	      void setWindow(uint16_t windowMSecs);
+        
+
+        // BLEScan *setActiveScan(boolean acScan);
+
+// new end
         BLEScanResults foundDevices;
         BLEAdvertisedDevice devices[MAX_NUMBER_OF_DEVICES];
         BLE_Device_Properties device_properties[MAX_NUMBER_OF_DEVICES];
-        
+    
         
         BLE();
         void init();
         void Scan();
+        void Stop();
+
 
 };
 
