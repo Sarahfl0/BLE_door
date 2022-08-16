@@ -35,10 +35,10 @@ uint8_t subscription_message_length = 0;
 // The below are the variables, which can be changed
 
 // wifi & mqttt variable
-String wifiSSID="dma-gulshan2.4";
-String wifiPassword="dmabd987";
-// String wifiSSID = "Faiza";
-// String wifiPassword = "faizafaiza";
+// String wifiSSID="dma-gulshan2.4";
+// String wifiPassword="dmabd987";
+String wifiSSID = "Faiza";
+String wifiPassword = "faizafaiza";
 String mqttBroker = "broker.hivemq.com";
 unsigned long wifi_interval = 30000;
 const char *topic_to_publish = "DMA/BLE/ESP_PUB";
@@ -128,13 +128,13 @@ void loop()
 			Serial.println("MQTT pub unsuccessful");
 		}
 	}
-	// if(pushbutton_pressed)
-	//   {
-	//     door_open();
-	//     delay(DOORTIME_INTERVAL);
-	//     door_close();
-	//     pushbutton_pressed = false;
-	//   }
+	if(pushbutton_pressed)
+	  {
+	    door_open();
+	    // delay(DOORTIME_INTERVAL);
+	    door_close();
+	    pushbutton_pressed = false;
+	  }
 
 	// bool take_input = true;
 	while (keypad_input)
@@ -317,6 +317,7 @@ void executeCommand(char *command)
 void door_open()
 
 {
+	Serial.println("The door is opening");
 	// door_status = 1;
 	for (int i=MAX_PWM_WRITE; i>=0 ; i -= STEPS)
 	{
