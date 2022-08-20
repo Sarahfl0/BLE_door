@@ -88,6 +88,7 @@ String EVENT::createJson(BLEScanResults result, String esp_mac)
                         // new_miss = true;
                         event_new_mac_id.add(mac_add);
                         event_new_rssi.add(device.getRSSI());
+                        rss
                         // event_new_battery.add(device.getTXPower());
                         // event_new_employee_no.add(j);
                     }
