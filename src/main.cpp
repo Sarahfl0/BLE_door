@@ -35,10 +35,10 @@ uint8_t subscription_message_length = 0;
 // The below are the variables, which can be changed
 
 // wifi & mqttt variable
-// String wifiSSID="dma-gulshan2.4";
-// String wifiPassword="dmabd987";
-String wifiSSID = "Faiza";
-String wifiPassword = "faizafaiza";
+String wifiSSID="dma-gulshan2.4";
+String wifiPassword="dmabd987";
+// String wifiSSID = "Faiza";
+// String wifiPassword = "faizafaiza";
 String mqttBroker = "broker.hivemq.com";
 unsigned long wifi_interval = 30000;
 const char *topic_to_publish = "DMA/BLE/ESP_PUB";
